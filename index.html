@@ -2,68 +2,22 @@
 <html lang="ja">
 <head>
  <meta charset="utf-8"/>
- <meta http-equiv="Content-Security-Policy" content="worker-src blob: ; default-src blob: * 'unsafe-inline' 'unsafe-eval'" />
- <script>if (! self.crossOriginIsolated) alert ("対応していないみたいです");</script>
- <style>
-  html, body, #subs { width: 100%; margin: 0; padding: 0; }
-  #upload, #subs { visibility: hidden; }
- </style>
+ <title>手元の動画から字幕を抽出</title>
+ <meta http-equiv="Content-Security-Policy" content="default-src 'self' blob: https://unpkg.com/ 'wasm-unsafe-eval' ;" />
+ <link href="/extsub.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
- <h1>動画を選択すると字幕を出す</h1>
- <input type="file" id="upload" accept=".mp4,video/*">
- <textarea id="logs">お待ちください</textarea>
- <pre id="subs">エラー</pre>
- <script>
-  const logs = document.getElementById("logs");
-  logs.value="ロード中...";
- </script>
- <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js"></script>
- <script>
-  const { createFFmpeg , fetchFile } = FFmpeg;
-  const ffmpeg = createFFmpeg({ log: true });
-  ffmpeg.setLogger(({type, message}) => {
-   logs.value += "\n[" + type + "] " + message;
-  });
-  const rip3g = data => {
-   let out = "";
-   let len = 0;
-   let end = "";
-   for(let i = 0; i+1 < data.length; i += 2 + len) {
-    len = data[i+1];
-    if(len) { end = "\n"; }
-    else { end = ""; }
-    out += (new TextDecoder).decode(data.slice(i+2, i+2+len)) + end;
-   }
-   return out;
-  };
-  const extract = async({
-   target: {
-    files
-   }
-  }) => {
-   const { name } =files[0];
-   const outname = "output.srt";
-   await ffmpeg.FS("writeFile", name, await fetchFile(files[0]));
-   await ffmpeg.run("-i", name, "-f", "ffmetadata", "metadata");
-   const metadata = await ffmpeg.FS("readFile", "metadata");
-   const metatext = (new TextDecoder).decode(metadata);
-   const subs = document.getElementById("subs");
-   subs.textContent = metatext + "\n";
-   await ffmpeg.run("-i", name, "-an", "-vn", "-dn", "-scodec", "copy", "-f", "rawvideo", outname);
-   const textdata = ffmpeg.FS("readFile", outname);
-   ffmpeg.FS("unlink", outname);
-   const text = rip3g(textdata);
-   subs.textContent += text;
-   subs.style.visibility = "visible";
-  };
-  const uploader = document.getElementById("upload");
-  uploader.addEventListener("change", extract);
-  (async () => {
-   await ffmpeg.load();
-  })();
-  logs.value = "準備完了";
-  uploader.style.visibility = "visible";
- </script>
+ <h1 id="title">動画から字幕だけ出す</h1>
+ <label id="uplabel" for="uploader">📁ファイルを選択👈
+  <input type="file" id="uploader" accept=".mp4,video/*">
+ </label>
+ <p id="subs">エラー</p>
+ <pre id="logs">お待ちください</pre>
+ <p id="download">
+  <button id="dlbutton">Windows用の似たソフト</button>
+  (<a href="https://www.fmworld.net/cs/azbyclub/qanavi/jsp/qacontents.jsp?PID=0209-8188">警告</a>が<a href="https://freesoft.tvbok.com/win10/operation/allow_smartscreen.html">出る</a>し使いにくい)
+ </p>
+ <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js" crossorigin></script>
+ <script src="/extsub.js"></script>
 </body>
 </html>
