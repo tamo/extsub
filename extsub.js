@@ -42,6 +42,7 @@ ffmpeg.setLogger(({type, message}) => {
 });
 
 const rip3g = data => {
+ const decoder = new TextDecoder();
  let out = "";
  let len = 0;
  let end = "";
@@ -49,7 +50,7 @@ const rip3g = data => {
   len = data[i+1];
   if(len) { end = "<br />"; }
   else { end = ""; }
-  out += (new TextDecoder).decode(data.slice(i+2, i+2+len)) + end;
+  out += decoder.decode(data.slice(i+2, i+2+len)) + end;
  }
  return out;
 };
