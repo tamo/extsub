@@ -126,7 +126,8 @@ uploader.addEventListener("change", extract);
   });
  } catch(e) {
   logs.textContent += "\n[error] " + e.message;
-  alert("エラーです。\n\n" + e.message);
+  // alert("エラーです。\n\n" + e.message);
+  throw(e);
  }
  logs.textContent = "準備完了" + logs.textContent.slice("ロード中...".length);
  uplabel.style.display = "block";
