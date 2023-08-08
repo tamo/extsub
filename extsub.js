@@ -2,8 +2,9 @@ if (!self.crossOriginIsolated) {
   alert("対応していないかもしれません");
 }
 import { fetchFile, toBlobURL } from "https://unpkg.com/@ffmpeg/util@0.12.0/dist/esm/index.js";
-import { FFmpeg } from "https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/esm/index.js";
 const corePath = "https://unpkg.com/browse/@ffmpeg/core-mt@0.12.1/dist/esm/";
+const utilPath = await toBlobURL("https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/esm/index.js");
+import { FFmpeg } from utilPath;
 if (fetchFile == undefined || FFmpeg == undefined) {
   alert("FFmpegがロードできませんでした");
 }
