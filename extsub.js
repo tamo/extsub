@@ -1,8 +1,9 @@
 if (!self.crossOriginIsolated) {
   alert("対応していないかもしれません");
 }
-import { fetchFile, importScript } from "https://unpkg.com/@ffmpeg/util@0.12.0/dist/esm/index.js";
-await importScript("https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/esm/index.js");
+import { fetchFile, toBlobURL } from "https://unpkg.com/@ffmpeg/util@0.12.0/dist/esm/index.js";
+import { FFmpeg } from "https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/esm/index.js";
+const corePath = "https://unpkg.com/browse/@ffmpeg/core-mt@0.12.1/dist/esm/";
 if (fetchFile == undefined || FFmpeg == undefined) {
   alert("FFmpegがロードできませんでした");
 }
@@ -117,7 +118,12 @@ const extract = async({
 uploader.addEventListener("change", extract);
 (async () => {
  try {
-  await ffmpeg.load({ log: true });
+  await ffmpeg.load({
+    log: true,
+    coreURL: await toBlobURL(corePath + "ffmpeg-core.js", "text/javascript"),
+    wasmURL: await toBlobURL(corePath + "ffmpeg-core.wasm", "application/wasm"),
+    workerURL: await toBlobURL(corePath + "ffmpeg-core.worker.js", "text/javascript"),
+  });
  } catch(e) {
   logs.textContent += "\n[error] " + e.message;
   alert("エラーです。\n\n" + e.message);
