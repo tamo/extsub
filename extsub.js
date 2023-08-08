@@ -1,8 +1,8 @@
 if (!self.crossOriginIsolated) {
   alert("対応していないかもしれません");
 }
-import { fetchFile } from "https://unpkg.com/@ffmpeg/util@0.12.0/dist/esm/index.js";
-import { FFmpeg } from "https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/esm/index.js";
+import { fetchFile, importScript } from "https://unpkg.com/@ffmpeg/util@0.12.0/dist/esm/index.js";
+await importScript("https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/esm/index.js");
 if (fetchFile == undefined || FFmpeg == undefined) {
   alert("FFmpegがロードできませんでした");
 }
