@@ -1,12 +1,3 @@
-if (!self.crossOriginIsolated) {
-  alert("対応していないかもしれません");
-}
-if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
-  alert("FFmpegがロードできませんでした");
-}
-const fetchFile = FFmpegUtil.fetchFile;
-const FFmpeg = FFmpegWASM.FFmpeg;
-
 const uplabel = document.getElementById("uplabel");
 const uploader = document.getElementById("uploader");
 const subs = document.getElementById("subs");
@@ -18,7 +9,18 @@ dlbutton.addEventListener('click',
     location.href='https://drive.google.com/file/d/1ythD8rjbzpV0ZQOrBfyv4_Q74WSUyMQK/view?usp=sharing';
   });
 
-logs.textContent="ロード中...";
+logs.textContent = "ロード中...";
+
+if (!self.crossOriginIsolated) {
+  logs.textContent += "\n[error] 対応していないかもしれません (crossOriginIsolated == false)";
+}
+
+if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
+  logs.textContent += "\n[error] FFmpegがロードできませんでした";
+  return;
+}
+const fetchFile = FFmpegUtil.fetchFile;
+const FFmpeg = FFmpegWASM.FFmpeg;
 
 const ffmpeg = new FFmpeg();
 var title = "";
