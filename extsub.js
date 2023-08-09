@@ -1,8 +1,8 @@
 if (!self.crossOriginIsolated) {
   alert("対応していないかもしれません");
 }
-import { fetchFile, toBlobURL } from "ffmpeg-util.js";
-import { FFmpeg } from "ffmpeg.js";
+import { fetchFile } from "./ffmpeg-util.js";
+import { FFmpeg } from "./ffmpeg.js";
 if (fetchFile == undefined || FFmpeg == undefined) {
   alert("FFmpegがロードできませんでした");
 }
@@ -118,7 +118,7 @@ uploader.addEventListener("change", extract);
 (async () => {
  try {
   await ffmpeg.load({
-    coreURL: "ffmpeg-core.js",
+    coreURL: "./ffmpeg-core.js",
   });
  } catch(e) {
   logs.textContent += "\n[error] " + e.message;
