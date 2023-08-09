@@ -37,7 +37,7 @@ jobs:
         run: mkdir _site
       - name: Copy files
         run: |
-          cp index.html extsub.js extsub.css \
+          cp index.html extsub.js extsub.css coi-config.js \
              coi-serviceworker/coi-serviceworker.min.js \
              _site
       - name: Fetch ffmpeg
