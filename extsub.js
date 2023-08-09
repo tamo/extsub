@@ -27,7 +27,7 @@ var copyr = "";
 
 ffmpeg.on("log", ({type, message}) => {
  logs.textContent += "\n[" + type + "] " + message;
- if (type == "fferr") {
+ if (type == "stderr") {
   function replacer(match, m1, m2, offset, string) {
    return m1+":"+m2;
   }
@@ -92,8 +92,8 @@ const extract = async({
   logs.textContent += "\n[error] " + e.message;
   subs.style.display = "block";
  }
- const textdata = ffmpeg.readFile(outname);
- ffmpeg.deleteFile(outname);
+ const textdata = await ffmpeg.readFile(outname);
+ // ffmpeg.deleteFile(outname);
  const text = rip3g(textdata);
  subs.innerHTML = '<p id="subtext">'
   + title + " (" + album + ")<br />"
