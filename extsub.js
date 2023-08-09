@@ -17,7 +17,7 @@ if (!self.crossOriginIsolated) {
 
 if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
   logs.textContent += "\n[error] FFmpegがロードできませんでした";
-  return;
+  throw new Error("FFmpeg is not loaded");
 }
 const fetchFile = FFmpegUtil.fetchFile;
 const FFmpeg = FFmpegWASM.FFmpeg;
