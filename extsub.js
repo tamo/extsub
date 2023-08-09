@@ -1,6 +1,11 @@
 if (!self.crossOriginIsolated) {
   alert("対応していないかもしれません");
-};
+}
+import { fetchFile, toBlobURL } from "ffmpeg-util.js";
+import { FFmpeg } from "ffmpeg.js";
+if (fetchFile == undefined || FFmpeg == undefined) {
+  alert("FFmpegがロードできませんでした");
+}
 
 const uplabel = document.getElementById("uplabel");
 const uploader = document.getElementById("uploader");
@@ -15,13 +20,12 @@ dlbutton.addEventListener('click',
 
 logs.textContent="ロード中...";
 
-const { createFFmpeg , fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg({ log: true });
+const ffmpeg = new FFmpeg();
 var title = "";
 var album = "";
 var copyr = "";
 
-ffmpeg.setLogger(({type, message}) => {
+ffmpeg.on("log", ({type, message}) => {
  logs.textContent += "\n[" + type + "] " + message;
  if (type == "fferr") {
   function replacer(match, m1, m2, offset, string) {
@@ -77,19 +81,19 @@ const extract = async({
  const { name } = files[0];
  const outname = "output.srt";
  try {
-  await ffmpeg.FS("writeFile", name, await fetchFile(files[0]));
+  await ffmpeg.writeFile(name, await fetchFile(files[0]));
  } catch(e) {
   logs.textContent += "\n[error] " + e.message;
   subs.style.display = "block";
  }
  try {
-  await ffmpeg.run("-i", name, "-an", "-vn", "-dn", "-scodec", "copy", "-f", "rawvideo", outname);
+  await ffmpeg.exec(["-i", name, "-an", "-vn", "-dn", "-scodec", "copy", "-f", "rawvideo", outname]);
  } catch(e) {
   logs.textContent += "\n[error] " + e.message;
   subs.style.display = "block";
  }
- const textdata = ffmpeg.FS("readFile", outname);
- ffmpeg.FS("unlink", outname);
+ const textdata = ffmpeg.readFile(outname);
+ ffmpeg.deleteFile(outname);
  const text = rip3g(textdata);
  subs.innerHTML = '<p id="subtext">'
   + title + " (" + album + ")<br />"
@@ -113,10 +117,13 @@ const extract = async({
 uploader.addEventListener("change", extract);
 (async () => {
  try {
-  await ffmpeg.load();
+  await ffmpeg.load({
+    coreURL: "ffmpeg-core.js",
+  });
  } catch(e) {
   logs.textContent += "\n[error] " + e.message;
-  alert("エラーです。\n\n" + e.message);
+  // alert("エラーです。\n\n" + e.message);
+  throw(e);
  }
  logs.textContent = "準備完了" + logs.textContent.slice("ロード中...".length);
  uplabel.style.display = "block";
