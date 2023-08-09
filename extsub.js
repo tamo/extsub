@@ -1,9 +1,11 @@
 if (!self.crossOriginIsolated) {
   alert("対応していないかもしれません");
 }
-if (fetchFile == undefined || FFmpeg == undefined) {
+if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
   alert("FFmpegがロードできませんでした");
 }
+const fetchFile = FFmpegUtil.fetchFile;
+const FFmpeg = FFmpegWASM.FFmpeg;
 
 const uplabel = document.getElementById("uplabel");
 const uploader = document.getElementById("uploader");
