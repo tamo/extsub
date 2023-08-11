@@ -44,10 +44,10 @@ jobs:
         run: |
           cd _site && \
           curl -o ffmpeg-util.js "https://unpkg.com/@ffmpeg/util@0.12.0/dist/umd/index.js" && \
-          wget "https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/umd/ffmpeg.js" \
-               "https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/umd/ffmpeg.js.map" \
-               "https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/umd/814.ffmpeg.js" \
-               "https://unpkg.com/@ffmpeg/ffmpeg@0.12.2/dist/umd/814.ffmpeg.js.map" \
+          wget "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/ffmpeg.js" \
+               "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/ffmpeg.js.map" \
+               "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/814.ffmpeg.js" \
+               "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/814.ffmpeg.js.map" \
                "https://unpkg.com/@ffmpeg/core-mt@0.12.1/dist/umd/ffmpeg-core.js" \
                "https://unpkg.com/@ffmpeg/core-mt@0.12.1/dist/umd/ffmpeg-core.wasm" \
                "https://unpkg.com/@ffmpeg/core-mt@0.12.1/dist/umd/ffmpeg-core.worker.js"
