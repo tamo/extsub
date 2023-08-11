@@ -94,8 +94,9 @@ const extract = async({
   logs.textContent += "\n[error] " + e.message;
   subs.style.display = "block";
  }
+ ffmpeg.deleteFile(name);
  const textdata = await ffmpeg.readFile(outname);
- // ffmpeg.deleteFile(outname);
+ ffmpeg.deleteFile(outname);
  const text = rip3g(textdata);
  subs.innerHTML = '<p id="subtext">'
   + title + " (" + album + ")<br />"
