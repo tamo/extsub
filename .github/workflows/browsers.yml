@@ -1,7 +1,5 @@
 name: 'BrowserStack Test'
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -23,6 +21,8 @@ jobs:
           local-identifier: random
       - name: 'Installing browserstack-cypress-cli'
         run: npm install -g browserstack-cypress-cli
+      - name: 'Installing cypress'
+        run: npm install -g cypress
       - name: 'Running test on BrowserStack with local testing enabled'
         run: |
           BROWSERSTACK_LOCAL=true \
