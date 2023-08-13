@@ -6,10 +6,13 @@ describe('test extsub', () => {
       return false
     })
     cy.visit('https://tamo.github.io/extsub/')
+    cy.wait(10000)
     cy.get('#logs[data-loaded="true"]', { timeout: 20000 })
   })
   it('uploads a file', () => {
-    cy.get('input#uploader').selectFile('test.mp4')
+    cy.wait(20000)
+    cy.get('#logs[data-loaded="true"]', { timeout: 20000 })
+    cy.get('input#uploader', { timeout: 20000 }).selectFile('test.mp4')
     cy.get('#subtext', { timeout: 10000 })
       .should('contain', 'タイトル ()')
       .and('contain', 'この動画は')
