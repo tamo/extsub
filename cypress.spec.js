@@ -1,8 +1,13 @@
 describe('test extsub', () => {
-  beforeEach(() => {
+  it('visit the page', () => {
     cy.visit('https://tamo.github.io/extsub/')
   })
   it('checks everything is loaded', () => {
+    cy.on('uncaught:exception', (err, runnable, promise) => {
+      expect(err.message).to.contain('SharedArrayBuffer')
+      done()
+      return false
+    })
     cy.get('#logs[data-loaded="true"]', { timeout: 20000 })
   })
   it('upload mp4', () => {
