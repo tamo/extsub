@@ -1,6 +1,6 @@
 describe('test extsub', () => {
-  it('checks everything is loaded', () => {
-    cy.on('uncaught:exception', (err, runnable, promise) => {
+  it('checks everything is loaded', (done) => {
+    cy.on('uncaught:exception', (err, runnable) => {
       expect(err.message).to.contain('SharedArrayBuffer')
       done()
       return false
