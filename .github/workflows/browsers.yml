@@ -19,10 +19,12 @@ jobs:
         with:
           local-testing: start
           local-identifier: random
+      - name: 'Initialize NPM'
+        run: npm init -y
       - name: 'Installing browserstack-cypress-cli'
-        run: npm install -g browserstack-cypress-cli
+        run: npm install -g browserstack-cypress-cli -d
       - name: 'Installing cypress'
-        run: npm install -g cypress
+        run: npm install -g cypress -d
       - name: 'Running test on BrowserStack with local testing enabled'
         run: |
           BROWSERSTACK_LOCAL=true \
