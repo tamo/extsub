@@ -129,5 +129,6 @@ uploader.addEventListener("change", extract);
   throw(e);
  }
  logs.textContent = "準備完了" + logs.textContent.slice("ロード中...".length);
+ logs.setAttribute("data-loaded", "true");
  uplabel.style.display = "block";
 })();
