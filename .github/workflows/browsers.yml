@@ -30,8 +30,7 @@ jobs:
           BROWSERSTACK_LOCAL=true \
           browserstack-cypress run \
           --browser "chrome@latest:Windows 11","firefox@latest:OS X Ventura","webkit@latest:OS X Ventura" \
-          --cypress-config-file ./cypress.config.js \
-          --spec ./cypress.spec.js
+          --cypress-config-file ./cypress.config.js
       - name: 'BrowserStack Local Stop'
         uses: 'browserstack/github-actions/setup-local@master'
         with:
