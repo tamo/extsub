@@ -1,6 +1,9 @@
 {
   "run_settings": {
     "cypress_version": "12",
+    "npm_dependencies": {
+      "cypress": "12"
+    },
     "project_name": "extsub",
     "build_name": "test 1",
     "parallels": "3"
