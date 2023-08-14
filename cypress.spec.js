@@ -6,11 +6,12 @@ describe('test extsub', () => {
       return false
     })
     cy.visit('https://tamo.github.io/extsub/')
+  })
+  it('reloads the page', () => {
+    cy.get('#refresh', { timeout: 10000 }).click()
     cy.wait(10000)
-    cy.get('#refresh').click()
   })
   it('checks everything is loaded', () => {
-    cy.wait(20000)
     cy.get('#logs[data-loaded="true"]', { timeout: 20000 })
   })
   it('uploads a file', () => {
