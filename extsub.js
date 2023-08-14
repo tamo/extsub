@@ -12,7 +12,7 @@ dlbutton.addEventListener('click',
 logs.textContent = "ロード中...";
 
 if (!self.crossOriginIsolated) {
-  logs.textContent += "\n[error] 対応していないかもしれません (crossOriginIsolated == false)";
+  logs.textContent += "\n[http-error] 対応していないかもしれません (crossOriginIsolated == false)";
   subs.innerHTML = '<label id="refresh">やり直し</label>';
   subs.style.display = "block";
   document.getElementById("refresh").addEventListener('click',
@@ -22,7 +22,7 @@ if (!self.crossOriginIsolated) {
 }
 
 if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
-  logs.textContent += "\n[error] FFmpegがロードできませんでした";
+  logs.textContent += "\n[js-error] FFmpegがロードできませんでした";
   throw new Error("FFmpeg is not loaded");
 }
 const fetchFile = FFmpegUtil.fetchFile;
@@ -91,13 +91,13 @@ const extract = async({
  try {
   await ffmpeg.writeFile(name, await fetchFile(files[0]));
  } catch(e) {
-  logs.textContent += "\n[error] " + e.message;
+  logs.textContent += "\n[write-error] " + e.toString();
   subs.style.display = "block";
  }
  try {
   await ffmpeg.exec(["-i", name, "-an", "-vn", "-dn", "-scodec", "copy", "-f", "rawvideo", outname]);
  } catch(e) {
-  logs.textContent += "\n[error] " + e.message;
+  logs.textContent += "\n[exec-error] " + e.toString();
   subs.style.display = "block";
  }
  ffmpeg.deleteFile(name);
@@ -130,8 +130,7 @@ uploader.addEventListener("change", extract);
     coreURL: "./ffmpeg-core.js",
   });
  } catch(e) {
-  logs.textContent += "\n[error] " + e.message;
-  // alert("エラーです。\n\n" + e.message);
+  logs.textContent += "\n[load-error] " + e.toString();
   throw(e);
  }
  logs.textContent = "準備完了" + logs.textContent.slice("ロード中...".length);
