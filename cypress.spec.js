@@ -1,4 +1,10 @@
 describe('test extsub', () => {
+  beforeEach(() => {
+    cy.intercept('*', (req) => {
+      req.headers['cross-origin-opener-policy'] = 'same-origin'
+      req.headers['cross-origin-embedder-policy'] = 'require-corp'
+    })
+  })
   it('visits the site', (done) => {
     cy.on('uncaught:exception', (err, runnable) => {
       expect(err.message).to.contain('SharedArrayBuffer')
@@ -6,24 +12,6 @@ describe('test extsub', () => {
       return false
     })
     cy.visit('https://tamo.github.io/extsub/')
-    cy.wait(10000)
-  })
-  it('reloads the page', (done) => {
-    cy.on('uncaught:exception', (err, runnable) => {
-      expect(err.message).to.contain('SharedArrayBuffer')
-      done()
-      return false
-    })
-    cy.get('#refresh', { timeout: 10000 }).click()
-    cy.wait(10000)
-  })
-  it('reloads the page again', (done) => {
-    cy.on('uncaught:exception', (err, runnable) => {
-      expect(err.message).to.contain('SharedArrayBuffer')
-      done()
-      return false
-    })
-    cy.get('#refresh', { timeout: 10000 }).click()
     cy.wait(10000)
   })
   it('checks everything is loaded', () => {
