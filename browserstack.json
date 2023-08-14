@@ -7,6 +7,6 @@
     "network_logs": true,
     "project_name": "extsub",
     "build_name": "test 1",
-    "parallels": "3"
+    "parallels": "1"
   }
 }
