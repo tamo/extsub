@@ -13,6 +13,11 @@ logs.textContent = "ロード中...";
 
 if (!self.crossOriginIsolated) {
   logs.textContent += "\n[error] 対応していないかもしれません (crossOriginIsolated == false)";
+  subs.innerHTML = '<label id="refresh">やり直し</label>';
+  document.getElementById("refresh").addEventListener('click',
+    function(){
+      location.reload();
+    });
 }
 
 if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
