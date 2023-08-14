@@ -8,7 +8,16 @@ describe('test extsub', () => {
     cy.visit('https://tamo.github.io/extsub/')
     cy.wait(10000)
   })
-  it('reloads the page', () => {
+  it('reloads the page', (done) => {
+    cy.on('uncaught:exception', (err, runnable) => {
+      expect(err.message).to.contain('SharedArrayBuffer')
+      done()
+      return false
+    })
+    cy.get('#refresh', { timeout: 10000 }).click()
+    cy.wait(10000)
+  })
+  it('reloads the page again', (done) => {
     cy.on('uncaught:exception', (err, runnable) => {
       expect(err.message).to.contain('SharedArrayBuffer')
       done()
