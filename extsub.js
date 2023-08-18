@@ -1,5 +1,6 @@
 const uplabel = document.getElementById("uplabel");
 const uploader = document.getElementById("uploader");
+const progress = document.getElementById("progress");
 const subs = document.getElementById("subs");
 const logs = document.getElementById("logs");
 const dlbutton = document.getElementById("dlbutton");
@@ -29,6 +30,11 @@ const fetchFile = FFmpegUtil.fetchFile;
 const FFmpeg = FFmpegWASM.FFmpeg;
 
 const ffmpeg = new FFmpeg();
+
+ffmpeg.on("progress", ({rate}) => {
+  progress.textContent = (rate * 100).toPrecision(2) + " %";
+})
+
 var title = "";
 var album = "";
 var copyr = "";
