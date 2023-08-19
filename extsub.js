@@ -135,10 +135,6 @@ const extract = async ({ target: { files } }) => {
 
 uploader.addEventListener("change", extract);
 (async () => {
-	const appendDot = () => {
-		logs.textContent += ".";
-	};
-	ffmpeg.on("progress", appendDot);
 	try {
 		await ffmpeg.load({
 			coreURL: "./ffmpeg-core.js",
@@ -150,7 +146,6 @@ uploader.addEventListener("change", extract);
 		}
 		throw e;
 	}
-	ffmpeg.off("progress", appendDot);
 	logs.textContent = "準備完了";
 	uplabel.style.display = "block";
 })();
