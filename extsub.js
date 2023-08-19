@@ -30,10 +30,6 @@ const FFmpeg = FFmpegWASM.FFmpeg;
 
 const ffmpeg = new FFmpeg();
 
-ffmpeg.on("progress", () => {
-  subs.textContent += ".";
-})
-
 var title = "";
 var album = "";
 var copyr = "";
@@ -130,6 +126,10 @@ const extract = async({
 
 uploader.addEventListener("change", extract);
 (async () => {
+ const appendDot = () => {
+  subs.textContent += ".";
+ };
+ ffmpeg.on("progress", appendDot);
  try {
   await ffmpeg.load({
     coreURL: "./ffmpeg-core.js",
@@ -141,7 +141,7 @@ uploader.addEventListener("change", extract);
   }
   throw(e);
  }
- logs.textContent = "準備完了" + logs.textContent.slice("ロード中...".length);
- logs.setAttribute("data-loaded", "true");
+ ffmpeg.off("progress", appendDot);
+ logs.textContent = "準備完了";
  uplabel.style.display = "block";
 })();
