@@ -29,6 +29,11 @@ const fetchFile = FFmpegUtil.fetchFile;
 const FFmpeg = FFmpegWASM.FFmpeg;
 
 const ffmpeg = new FFmpeg();
+
+ffmpeg.on("progress", () => {
+  subs.textContent += ".";
+})
+
 var title = "";
 var album = "";
 var copyr = "";
