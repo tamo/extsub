@@ -47,9 +47,8 @@ jobs:
                "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/ffmpeg.js.map" \
                "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/814.ffmpeg.js" \
                "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/814.ffmpeg.js.map" \
-               "https://unpkg.com/@ffmpeg/core-mt@0.12.2/dist/umd/ffmpeg-core.js" \
-               "https://unpkg.com/@ffmpeg/core-mt@0.12.2/dist/umd/ffmpeg-core.wasm" \
-               "https://unpkg.com/@ffmpeg/core-mt@0.12.2/dist/umd/ffmpeg-core.worker.js"
+               "https://unpkg.com/@ffmpeg/core@0.12.2/dist/umd/ffmpeg-core.js" \
+               "https://unpkg.com/@ffmpeg/core@0.12.2/dist/umd/ffmpeg-core.wasm"
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
