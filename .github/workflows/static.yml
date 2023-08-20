@@ -47,17 +47,9 @@ jobs:
                "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/ffmpeg.js.map" \
                "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/814.ffmpeg.js" \
                "https://unpkg.com/@ffmpeg/ffmpeg@0.12.4/dist/umd/814.ffmpeg.js.map" \
-               "https://raw.githubusercontent.com/tamo/Subworkers/conv-path-tostring/subworkers.js" \
                "https://unpkg.com/@ffmpeg/core-mt@0.12.2/dist/umd/ffmpeg-core.js" \
                "https://unpkg.com/@ffmpeg/core-mt@0.12.2/dist/umd/ffmpeg-core.wasm" \
                "https://unpkg.com/@ffmpeg/core-mt@0.12.2/dist/umd/ffmpeg-core.worker.js"
-      - name: Patch to import Subworkers
-        run: |
-          mkdir _orig
-          for i in extsub.js ffmpeg.js 814.ffmpeg.js ffmpeg-core.js ffmpeg-core.worker.js; do
-            mv _site/$i _orig/$i
-            echo 'importScripts("subworkers.js");' | cat _orig/$i > _site/$i
-          done
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
