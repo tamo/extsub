@@ -142,7 +142,7 @@ uploader.addEventListener("change", extract);
 	} catch (e) {
 		logs.textContent += `\n[load-error] ${e.toString()}`;
 		if (e.toString().includes("Worker")) {
-			logs.textContent += "\n (iOS は 16 以上でないと動かないようです)";
+			logs.textContent += "\n (iOS は 16.4 以上でないと動かないようです)";
 		}
 		throw e;
 	}
