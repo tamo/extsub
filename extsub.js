@@ -6,7 +6,7 @@ const dlbutton = document.getElementById("dlbutton");
 
 dlbutton.addEventListener("click", function () {
 	location.href =
-		"https://drive.google.com/file/d/1ythD8rjbzpV0ZQOrBfyv4_Q74WSUyMQK/view?usp=sharing";
+		"https://raw.githubusercontent.com/tamo/extsub/main/mp4txt.py";
 });
 
 logs.textContent = "ロード中...";
