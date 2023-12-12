@@ -5,8 +5,12 @@ const logs = document.getElementById("logs");
 const dlbutton = document.getElementById("dlbutton");
 
 dlbutton.addEventListener("click", function () {
-	location.href =
-		"https://raw.githubusercontent.com/tamo/extsub/main/mp4txt.py";
+	const l = document.createElement("a");
+	l.href = "https://raw.githubusercontent.com/tamo/extsub/main/mp4txt.py";
+	l.download = "mp4txt.py";
+	document.body.appendChild(l);
+	l.click();
+	document.body.removeChild(l);
 });
 
 logs.textContent = "ロード中...";
@@ -72,7 +76,7 @@ const rip3g = (data) => {
 };
 
 function saveas(txt, filename) {
-	var l = document.createElement("a");
+	const l = document.createElement("a");
 	l.href =
 		"data:text/plain;charset=utf-8;base64," +
 		window.btoa(
