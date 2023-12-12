@@ -56,19 +56,17 @@ ffmpeg.on("log", ({ type, message }) => {
 	}
 });
 
+// data is a Uint8Array returned by ffmpeg.readFile
+// tx3g format is { uint16 len; uint8 text[len]; }[]
 const rip3g = (data) => {
 	const decoder = new TextDecoder();
 	let out = "";
-	let len = 0;
-	let end = "";
-	for (let i = 0; i + 1 < data.length; i += 2 + len) {
-		len = data[i + 1];
+	let i = 0;
+	while (i + 1 < data.length) {
+		const len = (data[i++] << 8) + data[i++];
 		if (len) {
-			end = "<br />";
-		} else {
-			end = "";
+			out += decoder.decode(data.slice(i, i += len)) + "<br />";
 		}
-		out += decoder.decode(data.slice(i + 2, i + 2 + len)) + end;
 	}
 	return out;
 };
