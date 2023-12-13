@@ -21,7 +21,7 @@ if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
 	throw new Error("FFmpeg is not loaded");
 }
 
-dlbutton.addEventListener("click", function () {
+dlbutton.addEventListener("click", async function () {
 	const pydata = await FFmpegUtil.fetchFile("./mp4txt.py");
 	const pytxt = new TextDecoder().decode(pydata);
 	saveas(pytxt, "mp4txt.py");
