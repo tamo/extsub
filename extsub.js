@@ -4,15 +4,6 @@ const subs = document.getElementById("subs");
 const logs = document.getElementById("logs");
 const dlbutton = document.getElementById("dlbutton");
 
-dlbutton.addEventListener("click", function () {
-	const l = document.createElement("a");
-	l.href = "https://raw.githubusercontent.com/tamo/extsub/main/mp4txt.py";
-	l.download = "mp4txt.py";
-	document.body.appendChild(l);
-	l.click();
-	document.body.removeChild(l);
-});
-
 logs.textContent = "ロード中...";
 
 if (!self.crossOriginIsolated) {
@@ -29,6 +20,13 @@ if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
 	logs.textContent += "\n[js-error] FFmpegがロードできませんでした";
 	throw new Error("FFmpeg is not loaded");
 }
+
+dlbutton.addEventListener("click", function () {
+	const pydata = await FFmpegUtil.fetchFile("./mp4txt.py");
+	const pytxt = new TextDecoder().decode(pydata);
+	saveas(pytxt, "mp4txt.py");
+});
+
 const fetchFile = FFmpegUtil.fetchFile;
 const FFmpeg = FFmpegWASM.FFmpeg;
 
@@ -84,7 +82,7 @@ function saveas(txt, filename) {
 				return String.fromCharCode(parseInt(p1, 16));
 			})
 		);
-	l.download = filename + ".txt";
+	l.download = filename;
 	document.body.appendChild(l);
 	l.click();
 	document.body.removeChild(l);
@@ -127,7 +125,7 @@ const extract = async ({ target: { files } }) => {
 		'<label id="toplabel">トップに戻る</label>';
 	subs.style.display = "block";
 	document.getElementById("saveas").addEventListener("click", function () {
-		saveas(document.getElementById("subtext").innerText, name);
+		saveas(document.getElementById("subtext").innerText, name + ".txt");
 	});
 	document.getElementById("toplabel").addEventListener("click", function () {
 		window.scrollTo(0, 0);

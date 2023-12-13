@@ -36,7 +36,7 @@ jobs:
       - name: Make directory
         run: mkdir _site
       - name: Copy files
-        run: cp index.html extsub.js extsub.css coi-config.js _site
+        run: cp index.html extsub.js extsub.css coi-config.js mp4txt.py _site
       - name: Fetch coi
         run: curl -o _site/coi-serviceworker.min.js "https://unpkg.com/coi-serviceworker@0.1.7/coi-serviceworker.min.js"
       - name: Fetch ffmpeg
