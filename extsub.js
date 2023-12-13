@@ -38,21 +38,17 @@ var copyr = "";
 ffmpeg.on("log", ({ type, message }) => {
 	logs.textContent += `\n[${type}] ${message}`;
 	if (type == "stderr") {
-		function replacer(match, m1, m2, offset, string) {
-			return m1 + ":" + m2;
-		}
 		const propvalue = message
-			.replace(/^ +(title|album|copyright) *: (.+)$/, replacer)
-			.split(":", 2);
-		switch (propvalue[0]) {
+			.match(/^ +(title|album|copyright) *: (.+)$/)
+		switch (propvalue[1]) {
 			case "title":
-				title = propvalue[1];
+				title = propvalue[2];
 				break;
 			case "album":
-				album = propvalue[1];
+				album = propvalue[2];
 				break;
 			case "copyright":
-				copyr = propvalue[1];
+				copyr = propvalue[2];
 		}
 	}
 });
