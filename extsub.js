@@ -41,7 +41,7 @@ ffmpeg.on("log", ({ type, message }) => {
 		function replacer(match, m1, m2, offset, string) {
 			return m1 + ":" + m2;
 		}
-		var propvalue = message
+		const propvalue = message
 			.replace(/^ +(title|album|copyright) *: (.+)$/, replacer)
 			.split(":", 2);
 		switch (propvalue[0]) {
