@@ -4,6 +4,12 @@ const subs = document.getElementById("subs");
 const logs = document.getElementById("logs");
 const dlbutton = document.getElementById("dlbutton");
 
+dlbutton.addEventListener("click", async function () {
+	const pydata = await fetch("./mp4txt.py");
+	const pytxt = await pydata.text();
+	saveas(pytxt, "mp4txt.py");
+});
+
 logs.textContent = "ロード中...";
 
 if (!self.crossOriginIsolated) {
@@ -20,13 +26,6 @@ if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
 	logs.textContent += "\n[js-error] FFmpegがロードできませんでした";
 	throw new Error("FFmpeg is not loaded");
 }
-
-dlbutton.addEventListener("click", async function () {
-	const pydata = await FFmpegUtil.fetchFile("./mp4txt.py");
-	const pytxt = new TextDecoder().decode(pydata);
-	saveas(pytxt, "mp4txt.py");
-});
-
 const fetchFile = FFmpegUtil.fetchFile;
 const FFmpeg = FFmpegWASM.FFmpeg;
 
