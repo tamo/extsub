@@ -95,7 +95,7 @@ async function extract({ target: { files } }) {
 
 	const title = subs.getAttribute("title");
 	const album = subs.getAttribute("album");
-	const copyr = subs.getAttribute("copyr");
+	const copyr = subs.getAttribute("copyright");
 	const text = rip3g(textdata);
 	subs.innerHTML =
 		`<p id="subtext">${title || "No title"}${album ? " (" + album + ")" : ""}<br />` +
