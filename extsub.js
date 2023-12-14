@@ -22,77 +22,56 @@ if (!self.crossOriginIsolated) {
 	});
 }
 
-if (FFmpegUtil == undefined || FFmpegWASM == undefined) {
+if (!FFmpegUtil || !FFmpegWASM) {
 	logs.textContent += "\n[js-error] FFmpegがロードできませんでした";
 	throw new Error("FFmpeg is not loaded");
 }
-const fetchFile = FFmpegUtil.fetchFile;
-const FFmpeg = FFmpegWASM.FFmpeg;
 
-const ffmpeg = new FFmpeg();
-
-var title = "";
-var album = "";
-var copyr = "";
+const ffmpeg = new FFmpegWASM.FFmpeg();
 
 ffmpeg.on("log", ({ type, message }) => {
 	logs.textContent += `\n[${type}] ${message}`;
 	if (type == "stderr") {
 		const propvalue = message
-			.match(/^ +(title|album|copyright) *: (.+)$/)
-		switch (propvalue[1]) {
-			case "title":
-				title = propvalue[2];
-				break;
-			case "album":
-				album = propvalue[2];
-				break;
-			case "copyright":
-				copyr = propvalue[2];
+			.match(/^ +(title|album|copyright) *: (.+)$/);
+		if (propvalue?.length != 3) {
+			return;
 		}
+		subs.setAttribute(propvalue[1], propvalue[2]);
 	}
 });
 
-// data is a Uint8Array returned by ffmpeg.readFile
-// tx3g format is { uint16 len; uint8 text[len]; }[]
-const rip3g = (data) => {
-	const decoder = new TextDecoder();
-	let out = "";
-	let i = 0;
-	while (i + 1 < data.length) {
-		const len = (data[i++] << 8) + data[i++];
-		if (len) {
-			out += decoder.decode(data.slice(i, i += len)) + "<br />";
+(async () => {
+	try {
+		await ffmpeg.load({
+			coreURL: "./ffmpeg-core.js",
+		});
+	} catch (e) {
+		logs.textContent += `\n[load-error] ${e.toString()}`;
+		if (e.toString().includes("Worker")) {
+			logs.textContent += "\n (iOS は 16.4 以上でないと動かないようです)";
 		}
+		throw e;
 	}
-	return out;
-};
+	logs.textContent = "準備完了";
+	uplabel.style.display = "block";
+})();
 
-function saveas(txt, filename) {
-	const l = document.createElement("a");
-	l.href =
-		"data:text/plain;charset=utf-8;base64," +
-		window.btoa(
-			encodeURIComponent(txt).replace(/%([0-9A-F]{2})/g, function (match, p1) {
-				return String.fromCharCode(parseInt(p1, 16));
-			})
-		);
-	l.download = filename;
-	document.body.appendChild(l);
-	l.click();
-	document.body.removeChild(l);
-}
+uploader.addEventListener("change", extract);
 
-const extract = async ({ target: { files } }) => {
+async function extract({ target: { files } }) {
 	uplabel.setAttribute("disabled", "true");
 	const { name } = files[0];
 	const outname = "output.srt";
 	try {
-		await ffmpeg.writeFile(name, await fetchFile(files[0]));
+		await ffmpeg.writeFile(name, await FFmpegUtil.fetchFile(files[0]));
 	} catch (e) {
 		logs.textContent += `\n[write-error] ${e.toString()}`;
 		subs.style.display = "block";
 	}
+	subs.removeAttribute("title");
+	subs.removeAttribute("album");
+	subs.removeAttribute("copyr");
 	try {
 		await ffmpeg.exec([
 			"-i",
@@ -113,9 +92,15 @@ const extract = async ({ target: { files } }) => {
 	ffmpeg.deleteFile(name);
 	const textdata = await ffmpeg.readFile(outname);
 	ffmpeg.deleteFile(outname);
+
+	const title = subs.getAttribute("title");
+	const album = subs.getAttribute("album");
+	const copyr = subs.getAttribute("copyr");
 	const text = rip3g(textdata);
 	subs.innerHTML =
-		`<p id="subtext">${title} (${album})<br />${copyr}<br /><br />${text}<br /></p>` +
+		`<p id="subtext">${title || "No title"}${album ? " (" + album + ")" : ""}<br />` +
+		`${copyr || "No copyright"}<br /><br />` +
+		`${text || "No data"}<br /></p>` +
 		'<label id="saveas">ファイルとして保存</label><br /><br /><br />' +
 		'<label id="toplabel">トップに戻る</label>';
 	subs.style.display = "block";
@@ -126,21 +111,34 @@ const extract = async ({ target: { files } }) => {
 		window.scrollTo(0, 0);
 	});
 	uplabel.removeAttribute("disabled");
-};
+}
 
-uploader.addEventListener("change", extract);
-(async () => {
-	try {
-		await ffmpeg.load({
-			coreURL: "./ffmpeg-core.js",
-		});
-	} catch (e) {
-		logs.textContent += `\n[load-error] ${e.toString()}`;
-		if (e.toString().includes("Worker")) {
-			logs.textContent += "\n (iOS は 16.4 以上でないと動かないようです)";
+// data is a Uint8Array returned by ffmpeg.readFile
+// tx3g format is { uint16 len; uint8 text[len]; }[]
+function rip3g(data) {
+	const decoder = new TextDecoder();
+	let out = "";
+	let i = 0;
+	while (i + 1 < data.length) {
+		const len = (data[i++] << 8) + data[i++];
+		if (len) {
+			out += decoder.decode(data.slice(i, i += len)) + "<br />";
 		}
-		throw e;
 	}
-	logs.textContent = "準備完了";
-	uplabel.style.display = "block";
-})();
+	return out;
+}
+
+function saveas(txt, filename) {
+	const l = document.createElement("a");
+	l.href =
+		"data:text/plain;charset=utf-8;base64," +
+		window.btoa(
+			encodeURIComponent(txt).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+				return String.fromCharCode(parseInt(p1, 16));
+			})
+		);
+	l.download = filename;
+	document.body.appendChild(l);
+	l.click();
+	document.body.removeChild(l);
+}
