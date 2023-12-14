@@ -71,7 +71,7 @@ async function extract({ target: { files } }) {
 	}
 	subs.removeAttribute("title");
 	subs.removeAttribute("album");
-	subs.removeAttribute("copyr");
+	subs.removeAttribute("copyright");
 	try {
 		await ffmpeg.exec([
 			"-i",
