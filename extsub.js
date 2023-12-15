@@ -90,13 +90,17 @@ async function extract({ target: { files } }) {
 		subs.style.display = "block";
 	}
 	ffmpeg.deleteFile(name);
-	const textdata = await ffmpeg.readFile(outname);
-	ffmpeg.deleteFile(outname);
+
+	let text;
+	const fsnodes = await ffmpeg.listDir('.');
+	if (fsnodes.find((n) => n.name == outname)) {
+		text = rip3g(await ffmpeg.readFile(outname));
+		ffmpeg.deleteFile(outname);
+	}
 
 	const title = subs.getAttribute("title");
 	const album = subs.getAttribute("album");
 	const copyr = subs.getAttribute("copyright");
-	const text = rip3g(textdata);
 	subs.innerHTML =
 		`<p id="subtext">${title || "No title"}${album ? " (" + album + ")" : ""}<br />` +
 		`${copyr || "No copyright"}<br /><br />` +
