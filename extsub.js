@@ -61,7 +61,7 @@ uploader.addEventListener("change", extract);
 
 async function extract({ target: { files } }) {
 	uplabel.setAttribute("disabled", "true");
-	subs.innerHTML = '<p>処理中...</p>';
+	subs.innerHTML = '<p>処理中...<img src="./spinner.svg" /></p>';
 	subs.removeAttribute("title");
 	subs.removeAttribute("album");
 	subs.removeAttribute("copyright");
@@ -76,7 +76,6 @@ async function extract({ target: { files } }) {
 		logs.textContent += `\n[write-error] ${e.toString()}`;
 	}
 	try {
-		subs.innerHTML = '<p>処理中...<img src="./spinner.svg" /></p>';
 		await ffmpeg.exec([
 			"-i",
 			name,
@@ -89,7 +88,6 @@ async function extract({ target: { files } }) {
 			"rawvideo",
 			outname,
 		]);
-		subs.innerHTML = '<p>処理中...</p>';
 	} catch (e) {
 		subs.innerHTML = '<p>ファイル処理エラー</p>';
 		logs.textContent += `\n[exec-error] ${e.toString()}`;
