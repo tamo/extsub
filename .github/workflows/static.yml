@@ -62,7 +62,7 @@ jobs:
             "https://unpkg.com/@ffmpeg/core@${core}/dist/umd/ffmpeg-core.wasm"
 
       - run: |
-          cp index.html extsub.js extsub.css coi-config.js mp4txt.py _site
+          cp index.html extsub.js extsub.css coi-config.js mp4txt.py spinner.svg _site
           cp deps/* _site
 
       - uses: actions/configure-pages@v3
