@@ -61,18 +61,22 @@ uploader.addEventListener("change", extract);
 
 async function extract({ target: { files } }) {
 	uplabel.setAttribute("disabled", "true");
+	subs.innerHTML = '<p>処理中...</p>';
+	subs.removeAttribute("title");
+	subs.removeAttribute("album");
+	subs.removeAttribute("copyright");
+	subs.style.display = "block";
+
 	const { name } = files[0];
 	const outname = "output.srt";
 	try {
 		await ffmpeg.writeFile(name, await FFmpegUtil.fetchFile(files[0]));
 	} catch (e) {
+		subs.innerHTML = '<p>ファイル読み出しエラー</p>';
 		logs.textContent += `\n[write-error] ${e.toString()}`;
-		subs.style.display = "block";
 	}
-	subs.removeAttribute("title");
-	subs.removeAttribute("album");
-	subs.removeAttribute("copyright");
 	try {
+		subs.innerHTML = '<p>処理中...<img src="./spinner.svg" /></p>';
 		await ffmpeg.exec([
 			"-i",
 			name,
@@ -85,9 +89,10 @@ async function extract({ target: { files } }) {
 			"rawvideo",
 			outname,
 		]);
+		subs.innerHTML = '<p>処理中...</p>';
 	} catch (e) {
+		subs.innerHTML = '<p>ファイル処理エラー</p>';
 		logs.textContent += `\n[exec-error] ${e.toString()}`;
-		subs.style.display = "block";
 	}
 	ffmpeg.deleteFile(name);
 
@@ -107,7 +112,6 @@ async function extract({ target: { files } }) {
 		`${text || "No data"}<br /></p>` +
 		'<label id="saveas">ファイルとして保存</label><br /><br /><br />' +
 		'<label id="toplabel">トップに戻る</label>';
-	subs.style.display = "block";
 	document.getElementById("saveas").addEventListener("click", function () {
 		saveas(document.getElementById("subtext").innerText, name + ".txt");
 	});
