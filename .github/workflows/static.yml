@@ -40,9 +40,9 @@ jobs:
 
       - id: cache
         uses: actions/cache@v3
-          with:
-            path: deps
-            key: cache-${{env.coi}}-${{env.util}}-${{env.ffmpeg}}-${{env.core}}
+        with:
+          path: deps
+          key: cache-${{env.coi}}-${{env.util}}-${{env.ffmpeg}}-${{env.core}}
 
       - name: Fetch deps
         if: steps.cache.outputs.cache-hit != 'true'
