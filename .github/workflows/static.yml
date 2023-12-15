@@ -44,26 +44,26 @@ jobs:
           path: deps
           key: cache-${{env.coi}}-${{env.util}}-${{env.ffmpeg}}-${{env.core}}
 
-      - name: Fetch deps
+      - name: deps
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir deps
           cd deps
-          curl -o coi-serviceworker.min.js \
-               "https://unpkg.com/coi-serviceworker@${coi}/coi-serviceworker.min.js"
-          curl -o ffmpeg-util.js \
-               "https://unpkg.com/@ffmpeg/util@${util}/dist/umd/index.js"
-          wget "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/ffmpeg.js" \
-               "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/ffmpeg.js.map" \
-               "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/814.ffmpeg.js" \
-               "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/814.ffmpeg.js.map" \
-               "https://unpkg.com/@ffmpeg/core@${core}/dist/umd/ffmpeg-core.js" \
-               "https://unpkg.com/@ffmpeg/core@${core}/dist/umd/ffmpeg-core.wasm"
+          curl -s -o coi-serviceworker.min.js \
+            "https://unpkg.com/coi-serviceworker@${coi}/coi-serviceworker.min.js"
+          curl -s -o ffmpeg-util.js \
+            "https://unpkg.com/@ffmpeg/util@${util}/dist/umd/index.js"
+          wget -q \
+            "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/ffmpeg.js" \
+            "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/ffmpeg.js.map" \
+            "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/814.ffmpeg.js" \
+            "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/814.ffmpeg.js.map" \
+            "https://unpkg.com/@ffmpeg/core@${core}/dist/umd/ffmpeg-core.js" \
+            "https://unpkg.com/@ffmpeg/core@${core}/dist/umd/ffmpeg-core.wasm"
 
-      - name: Copy files to _site
-        run: |
-          cp deps/* _site
+      - run: |
           cp index.html extsub.js extsub.css coi-config.js mp4txt.py _site
+          cp deps/* _site
 
       - uses: actions/configure-pages@v3
       - uses: actions/upload-pages-artifact@v2
