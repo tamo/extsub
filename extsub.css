@@ -6,3 +6,4 @@ label:hover { background-color: lightcoral;}
 label[disabled] { background-color: gray; }
 #uploader { display: none; }
 #logs, #download { font-size: 50%; overflow: auto; }
+#logs[loading]:before { content: url(spinner.svg); }

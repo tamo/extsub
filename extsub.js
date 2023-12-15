@@ -10,8 +10,6 @@ dlbutton.addEventListener("click", async function () {
 	saveas(pytxt, "mp4txt.py");
 });
 
-logs.textContent = "ロード中...";
-
 if (!self.crossOriginIsolated) {
 	logs.textContent +=
 		"\n[http-error] 対応していないかもしれません (crossOriginIsolated == false)";
@@ -43,18 +41,21 @@ ffmpeg.on("log", ({ type, message }) => {
 
 (async () => {
 	try {
+		logs.setAttribute("loading", "true");
 		await ffmpeg.load({
 			coreURL: "./ffmpeg-core.js",
 		});
+		logs.textContent = "準備完了";
+		uplabel.style.display = "block";
 	} catch (e) {
 		logs.textContent += `\n[load-error] ${e.toString()}`;
 		if (e.toString().includes("Worker")) {
 			logs.textContent += "\n (iOS は 16.4 以上でないと動かないようです)";
 		}
 		throw e;
+	} finally {
+		logs.removeAttribute("loading");
 	}
-	logs.textContent = "準備完了";
-	uplabel.style.display = "block";
 })();
 
 uploader.addEventListener("change", extract);
