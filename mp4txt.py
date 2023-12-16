@@ -78,7 +78,7 @@ def metainfo(mp4, ffprobe):
     probe = subprocess.Popen([ffprobe,
                               "-loglevel", "error",
                               "-show_entries",
-                              "format_tags=title,copyright",
+                              "format_tags=title,album,copyright",
                               "-of", "default=noprint_wrappers=1:nokey=1",
                               mp4],
                              stdout=subprocess.PIPE)
