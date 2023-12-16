@@ -155,11 +155,11 @@ if __name__ == '__main__':
             print("Extracting:", mp4)
             meta = metainfo(mp4, ffprobe)
             srt = mp4 + ".srt"
-            ret = subprocess.call([ffmpeg,
-                                   "-loglevel", "error",
-                                   "-y",
-                                   "-i", mp4,
-                                   srt])
+            ret = subprocess.run([ffmpeg,
+                                  "-loglevel", "error",
+                                  "-y",
+                                  "-i", mp4,
+                                  srt]).returncode
             if ret == 0:
                 with open(srt, 'r', encoding="utf-8") as srtfile:
                     with open(mp4 + ".txt", 'w', encoding="utf-8") as txtfile:
