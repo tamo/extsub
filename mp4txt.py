@@ -4,7 +4,7 @@ import shutil
 import subprocess
 
 
-def srt2txt(srtfile, txtfile, meta, tags, gap):
+def srt2txt(srtfile, txtfile, meta, deltags, gap):
     import re
     from enum import Enum, auto
 
@@ -21,6 +21,7 @@ def srt2txt(srtfile, txtfile, meta, tags, gap):
     for entry in meta:
         if len(entry) > 0:
             print(entry, file=txtfile)
+            if debug: print("META", entry)
 
     ok = True
     last_idx = 0
@@ -34,6 +35,7 @@ def srt2txt(srtfile, txtfile, meta, tags, gap):
     #     "<tag>", or "{tag}"
     srtdata = srtfile.read()
     tagr = re.compile(r'(\{[^}]*\}|<[^>]*>)')
+    txt = ""
     for line in srtdata.splitlines(True):
         if state == SRTState.NUMBER:
             try:
@@ -41,6 +43,10 @@ def srt2txt(srtfile, txtfile, meta, tags, gap):
             except ValueError as e:
                 print("Invalid value in", last_idx)
                 print(e)
+                if deltags:
+                    print(re.sub(tagr, '', line).rstrip(" \n"), file=txtfile)
+                else:
+                    print(line.rstrip(" \n"), file=txtfile)
                 ok = False
                 continue
             if subnum - last_idx != 1:
@@ -49,6 +55,7 @@ def srt2txt(srtfile, txtfile, meta, tags, gap):
                 ok = False
             last_idx = subnum
             state = SRTState.TIMES
+            if debug: print("NUMBER", subnum)
         elif state == SRTState.TIMES:
             start_time, arrow, end_time = line.split(" ")
             if arrow != "-->":
@@ -56,20 +63,21 @@ def srt2txt(srtfile, txtfile, meta, tags, gap):
                 ok = False
                 continue
             state = SRTState.STRINGS
-            txt = ""
+            if debug: print("TIME", start_time, "-->", end_time)
         elif state == SRTState.STRINGS:
-            # in case it has "\r\n\r\n"
-            if len(line.replace("\r\n", " ")) > 0:
+            if len(line.rstrip("\n")) > 0:
                 txt += line.rstrip(" \r\n") + " "
             else:
                 diff = to_ms(start_time) - last_end
                 if diff > gap:
                     print("", file=txtfile)
-                if tags:
+                if deltags:
                     txt = re.sub(tagr, '', txt)
                 print(txt, file=txtfile)
                 last_end = to_ms(end_time)
                 state = SRTState.NUMBER
+                txt = ""
+    print(txt, file=txtfile)
     return ok
 
 
@@ -136,26 +144,29 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Extract text from MP4')
     parser.add_argument('files', metavar='mp4',
                         nargs='*',
-                        help='MP4 file')
+                        help='MP4 files')
     parser.add_argument('-t', '--tags',
                         action='store_true',
-                        help='Delete tags')
-    parser.add_argument('-g', '--gap', metavar='ms',
+                        help='Keep tags')
+    parser.add_argument('-g', '--gap', metavar='MS',
                         type=int, default=1000,
-                        help='Newline as silence')
+                        help='Newlines represent silence longer than MS')
+    parser.add_argument('-d', '--debug',
+                        action='store_true',
+                        help='Verbose output and keep SRT')
     args = parser.parse_args()
-    files = args.files
-    tags = args.tags
-    gap = args.gap
+    debug = args.debug
+    if debug: print("Using", ffmpeg, "and", ffprobe)
 
-    if len(files) == 0:
+    if len(args.files) == 0:
         import tkinter
         from tkinter import filedialog
         print("No filenames given. Please specify the files to use.")
         tkinter.Tk().withdraw()
         files = filedialog.askopenfilenames(filetypes=[("", "*.mp4")])
     else:
-        files = map(os.path.abspath, files)
+        files = map(os.path.abspath, args.files)
+    if debug: print("FILES", files)
 
     for mp4 in files:
         try:
@@ -170,12 +181,15 @@ if __name__ == '__main__':
             if ret == 0:
                 with open(srt, 'r', encoding="utf-8") as srtfile:
                     with open(mp4 + ".txt", 'w', encoding="utf-8") as txtfile:
-                        ok = srt2txt(srtfile, txtfile, meta, tags, gap)
+                        ok = srt2txt(srtfile, txtfile, meta, not args.tags, args.gap)
                         print("Done:      ", txtfile.name,
                               "(OK)" if ok == True else "(ERROR)")
                         if ok == False:
                             raise ValueError("Invalid data in the SRT file")
-                os.remove(srt)
+                if debug:
+                    input()
+                else:
+                    os.remove(srt)
             else:  # without subtitle?
                 print("Press ENTER to continue.")
                 key = input("Or press q and ENTER sequentially, to abort.")
