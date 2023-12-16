@@ -32,9 +32,9 @@ def srt2txt(srtfile, txtfile, meta, tags, gap):
     #   STRINGS\n
     #     where STRINGS can have "\r\n",
     #     "<tag>", or "{tag}"
-    srtdata = srtfile.read().replace("\r\n", " ")
+    srtdata = srtfile.read()
     tagr = re.compile(r'(\{[^}]*\}|<[^>]*>)')
-    for line in srtdata.splitlines():
+    for line in srtdata.splitlines(True):
         if state == SRTState.NUMBER:
             try:
                 subnum = int(line)
@@ -58,8 +58,9 @@ def srt2txt(srtfile, txtfile, meta, tags, gap):
             state = SRTState.STRINGS
             txt = ""
         elif state == SRTState.STRINGS:
-            if len(line) > 0:
-                txt += line.rstrip(" ") + " "
+            # in case it has "\r\n\r\n"
+            if len(line.replace("\r\n", " ")) > 0:
+                txt += line.rstrip(" \r\n") + " "
             else:
                 diff = to_ms(start_time) - last_end
                 if diff > gap:
