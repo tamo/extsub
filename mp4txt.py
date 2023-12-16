@@ -87,17 +87,20 @@ def metainfo(mp4, ffprobe):
     return meta
 
 
-def ff_download(dir):
+def ff_download():
     import zipfile
     url = 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip'
-    zipname = os.path.join(dir, "ffmpeg.zip")
-    os.system("powershell -Command wget " + url + " -OutFile " + zipname)
+    zipname = "ffmpeg.zip"
+    powershell = shutil.which("powershell.exe")
+    if powershell == None:
+        return None, None
+    subprocess.run([powershell, "-Command", "wget", url, "-OutFile", zipname])
     with zipfile.ZipFile(zipname, "r") as z:
         for item in z.infolist():
             for target in ["ffmpeg.exe", "ffprobe.exe"]:
                 if item.filename.endswith("/" + target):
                     with z.open(item) as zexe:
-                        with open(os.path.join(dir, target), "wb") as wexe:
+                        with open(target, "wb") as wexe:
                             wexe.write(zexe.read())
     ffmpeg = shutil.which("ffmpeg.exe", mode=os.F_OK)
     ffprobe = shutil.which("ffprobe.exe", mode=os.F_OK)
@@ -110,14 +113,15 @@ if __name__ == '__main__':
     from builtins import input
     import traceback
 
-    cdir = os.path.abspath(os.path.dirname(sys.argv[0]))
+    pwd = os.getcwd()
+    os.chdir(os.path.dirname(sys.argv[0]))
     ffmpeg = shutil.which("ffmpeg.exe", mode=os.F_OK)
     ffprobe = shutil.which("ffprobe.exe", mode=os.F_OK)
     if ffmpeg == None or ffprobe == None:
         print("Not found: ffmpeg or ffprobe")
-        key = input("Download ffmpeg?")
+        key = input("Download ffmpeg? [y/N] ")
         if len(key) > 0 and (key[0] == "y" or key[0] == "Y"):
-            ffmpeg, ffprobe = ff_download(cdir)
+            ffmpeg, ffprobe = ff_download()
             if ffmpeg == None or ffprobe == None:
                 print("Failed to install ffmpeg.")
                 input("Press ENTER key to exit.")
@@ -125,6 +129,9 @@ if __name__ == '__main__':
         else:
             input("Press ENTER key to exit.")
             sys.exit()
+    ffmpeg = os.path.abspath(ffmpeg)
+    ffprobe = os.path.abspath(ffprobe)
+    os.chdir(pwd)
 
     parser = argparse.ArgumentParser(description='Extract text from MP4')
     parser.add_argument('files', metavar='mp4',
