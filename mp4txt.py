@@ -31,8 +31,7 @@ def srt2txt(srtfile, txtfile, meta, deltags, gap):
     #   NUMBER\n
     #   start_time --> end_time POSITIONS\n
     #   STRINGS\n
-    #     where STRINGS can have "\r\n",
-    #     "<tag>", or "{tag}"
+    #     where STRINGS can have "<tag>" or "{tag}"
     srtdata = srtfile.read()
     tagr = re.compile(r'(\{[^}]*\}|<[^>]*>)')
     txt = ""
