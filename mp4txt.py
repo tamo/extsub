@@ -186,16 +186,16 @@ if __name__ == '__main__':
                         if ok == False:
                             raise ValueError("Invalid data in the SRT file")
                 if debug:
-                    input()
+                    input("Press ENTER key. (debug mode)")
                 else:
                     os.remove(srt)
             else:  # without subtitle?
                 print("Press ENTER to continue.")
                 key = input("Or press q and ENTER sequentially, to abort.")
-                if len(key) == 0:
-                    continue
-                elif key[0] == "q" or key[0] == "Q":
+                if len(key) > 0 and (key[0] == "q" or key[0] == "Q"):
                     sys.exit()
+                else:
+                    continue
         except Exception as e:  # bug?
             print(traceback.format_exc())
             input("Press ENTER key to exit.")
