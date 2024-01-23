@@ -30,8 +30,8 @@ jobs:
     env:
       coi: 0.1.7
       util: 0.12.1
-      ffmpeg: 0.12.9
-      core: 0.12.5
+      ffmpeg: 0.12.10
+      core: 0.12.6
 
     steps:
       - uses: actions/checkout@v4
