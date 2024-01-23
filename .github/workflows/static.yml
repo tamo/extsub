@@ -49,11 +49,11 @@ jobs:
         run: |
           mkdir deps
           cd deps
-          curl -sS -o coi-serviceworker.min.js \
+          curl -Lo coi-serviceworker.min.js \
             "https://unpkg.com/coi-serviceworker@${coi}/coi-serviceworker.min.js"
-          curl -sS -o ffmpeg-util.js \
+          curl -Lo ffmpeg-util.js \
             "https://unpkg.com/@ffmpeg/util@${util}/dist/umd/index.js"
-          curl -sS \
+          curl -LJO \
             "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/ffmpeg.js" \
             "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/ffmpeg.js.map" \
             "https://unpkg.com/@ffmpeg/ffmpeg@${ffmpeg}/dist/umd/814.ffmpeg.js" \
